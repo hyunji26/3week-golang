@@ -16,6 +16,7 @@ func main() {
 	scores := map[string]int{
 		"Alice": 90,
 		"Bob":   75,
+		"Hyunji": 100,
 	}
 	scores["Carol"] = 88
 
@@ -27,4 +28,11 @@ func main() {
 	for name, score := range scores {
 		fmt.Printf("%s: %d점\n", name, score)
 	}
+
+	total := 0
+	for _, score := range scores {
+   		 total += score
+	}
+	avg := float64(total) / float64(len(scores))
+	fmt.Printf("평균 점수: %.2f\n", avg)
 }

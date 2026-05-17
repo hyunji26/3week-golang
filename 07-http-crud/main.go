@@ -35,7 +35,7 @@ func main() {
 func usersHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		getUsers(w)
+		getUsers(w, r)
 	case http.MethodPost:
 		createUser(w, r)
 	default:
@@ -62,8 +62,27 @@ func userByIDHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func getUsers(w http.ResponseWriter) {
-	writeJSON(w, http.StatusOK, users)
+func getUsers(w http.ResponseWriter, r *http.Request) {
+	 minAgeStr := r.URL.Query().Get("minAge")
+    
+	 if minAgeStr == "" {
+		 writeJSON(w, http.StatusOK, users)
+		 return
+		 }
+    
+	 minAge, err := strconv.Atoi(minAgeStr)
+	 if err != nil {
+		 writeError(w, http.StatusBadRequest, "invalid minAge")
+		 return
+		 }
+    
+	 var filtered []User
+	 for _, user := range users {
+	 if user.Age >= minAge {
+		 filtered = append(filtered, user)
+		 }
+	 }
+	 writeJSON(w, http.StatusOK, filtered)
 }
 
 func getUser(w http.ResponseWriter, id int) {
